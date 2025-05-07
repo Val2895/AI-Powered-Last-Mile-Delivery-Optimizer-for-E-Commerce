@@ -54,7 +54,15 @@ with st.sidebar.form("inputs"):
 stops = []
 if upload:
     df = pd.read_excel(upload)
-    stops = df.iloc[:, 0].dropna().astype(str).tolist()
+    raw_stops = df.iloc[:, 0].dropna().astype(str).tolist()
+
+    if len(raw_stops) > 20:
+        st.sidebar.error("❌ You can upload up to 20 stops only to reduce cost.")
+        upload = None  # Reset upload to prevent processing
+    else:
+        stops = raw_stops
+        st.sidebar.success(f"✅ {len(stops)} stops loaded successfully.")
+
 
 if submit:
     if not (start and end and stops):
